@@ -2,7 +2,12 @@ version: '3.8'
 services:
   bot:
     build: .
-    container_name: tg_delete_bot
+    container_name: auto-delete-msg-bot
     restart: always
     environment:
+      # 在这里填入你的具体配置
+      - BOT_TOKEN=123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11
+      - CHANNEL_ID=-1001234567890
+      - DELETE_DELAY=120
+      # 设置时区
       - TZ=Asia/Shanghai
