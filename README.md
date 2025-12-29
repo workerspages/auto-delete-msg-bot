@@ -146,6 +146,10 @@ docker-compose logs -f
 ```text
 [{"token":"123456:AAA-机器人A","channels":[{"id":"-100111","delay":60},{"id":"-100222","delay":300}]},{"token":"987654:BBB-机器人B","channels":[{"id":"-100333","delay":10}]}]
 ```
+```text
+[{"token":"A机器人Token","channels":[{"id":"A群组或频道ID","delay":延迟删除时间秒},{"id":"B群组或频道ID","delay":延迟删除时间秒}]},{"token":"B机器人Token","channels":[{"id":"C群组或频道ID","delay":延迟删除时间秒}]}]
+```
+
 
 ### 4. 常见问题 (FAQ)
 
