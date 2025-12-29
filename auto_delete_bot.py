@@ -59,8 +59,11 @@ class AutoDeleteBot:
 
     def start(self):
         """启动机器人轮询"""
+        logging.info("--------------------------------")
         logging.info(f"🤖 机器人 [{self.bot_name}] 启动中...")
         logging.info(f"📋 监听频道: {list(self.channel_configs.keys())}")
+        logging.info(f"⏱️ 删除延迟: {delay} 秒")
+        logging.info("--------------------------------")
         try:
             self.bot.infinity_polling(timeout=10, skip_pending=True)
         except Exception as e:
