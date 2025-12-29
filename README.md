@@ -57,10 +57,7 @@ services:
       - TZ=Asia/Shanghai
       # ================= 配置区域 =================
       # 1. 你的机器人 Token
-      - BOT_TOKEN=YOUR_BOT_TOKEN_HERE
-      # 2. 你的频道 ID
-      - CHANNEL_ID=-100xxxxxxxxxx
-      # 3. 删除延迟 (秒)，例如 120 秒 = 2分钟
+      - BOT_CONFIG=[{"token":"123456:AAA-机器人A","channels":[{"id":"-100111","delay":60},{"id":"-100222","delay":300}]},{"token":"987654:BBB-机器人B","channels":[{"id":"-100333","delay":10}]}]
       - DELETE_DELAY=120
       # ===========================================
     volumes:
@@ -93,52 +90,79 @@ docker-compose logs -f
 
 | 变量名 | 必填 | 默认值 | 说明 |
 | :--- | :---: | :---: | :--- |
-| `BOT_TOKEN` | ✅ | 无 | 机器人的 API Token (由 BotFather 提供) |
-| `CHANNEL_ID` | ✅ | 无 | 目标频道的 ID (如 `-10012345678`) 或 `@用户名` |
-| `DELETE_DELAY` | ❌ | `120` | 消息保留时间，单位为**秒** |
+| `BOT_CONFIG` | ✅ | 无 | [{"token":"123456:AAA-机器人A","channels":[{"id":"-100111","delay":60},{"id":"-100222","delay":300}]},{"token":"987654:BBB-机器人B","channels":[{"id":"-100333","delay":10}]}] |
 | `TZ` | ❌ | `UTC` | 系统时区，建议设为 `Asia/Shanghai` 以方便看日志 |
 
+
+
+### 2. 新的配置方式 (JSON)
+
+因为要支持复杂结构，我们不再使用 `BOT_TOKEN` 这种单一变量，而是合并为一个名为 `BOT_CONFIG` 的变量，其内容是一个 **JSON 列表**。
+
+#### 示例配置格式
+
+假设你有两个机器人：
+*   **机器人 A**：
+    *   管理频道 `-1001111`，2分钟（120秒）删除。
+    *   管理频道 `-1002222`，5分钟（300秒）删除。
+*   **机器人 B**：
+    *   管理频道 `-1003333`，10秒删除（快闪模式）。
+
+你需要构造如下的 JSON 字符串：
+
+```json
+[
+  {
+    "token": "机器人A的TOKEN",
+    "channels": [
+      {"id": "-1001111", "delay": 120},
+      {"id": "-1002222", "delay": 300}
+    ]
+  },
+  {
+    "token": "机器人B的TOKEN",
+    "channels": [
+      {"id": "-1003333", "delay": 10}
+    ]
+  }
+]
+```
+
 ---
 
-## 🐍 传统方式部署 (Python 直接运行)
+### 3. 如何在 Zeabur (或其他平台) 上部署
 
-如果不使用 Docker，请确保您的环境满足以下要求：
+#### 第一步：重新构建镜像
+由于代码变了，你需要重新 Commit 代码并 Push 到 GitHub，或者重新运行我之前提供的 Shell 脚本来生成镜像。
+`Dockerfile` **不需要修改**，依然是那个样子。
 
-1.  **安装依赖**：
-    ```bash
-    pip3 install pyTelegramBotAPI
-    ```
-2.  **设置环境变量并运行** (Linux/Mac)：
-    ```bash
-    export BOT_TOKEN="你的Token"
-    export CHANNEL_ID="-100xxxx"
-    export DELETE_DELAY=120
-    
-    # 后台运行
-    nohup python3 auto_delete_bot.py > bot.log 2>&1 &
-    ```
+#### 第二步：修改环境变量
 
----
+在 Zeabur 的 **Variables** 面板中：
 
-## ❓ 常见问题与获取 ID 指南
+1.  **删除** 旧变量：`BOT_TOKEN`, `CHANNEL_ID`, `DELETE_DELAY`（这些已经不用了）。
+2.  **新增** 变量 `BOT_CONFIG`。
+3.  **填入值**：将上面的 JSON 代码压缩成一行（或者 Zeabur 支持多行输入），填进去。
 
-### 1. 如何获取 Channel ID？
-Telegram 的频道 ID 是固定的，即使用户名改了 ID 也不会变。
-*   **方法一**：将你的频道里的任意一条消息转发给机器人 [@getmyid_bot](https://t.me/getmyid_bot)。它会返回 `Forwarded from chat: -100xxxxxxxx`，这个数字就是 ID。
-*   **方法二**：在网页版 Telegram 打开频道，URL 中的数字部分（如 `c/1234567890/`）加上 `-100` 前缀即为 ID（即 `-1001234567890`）。
+**Zeabur 填写的示例值（压缩版）：**
+```text
+[{"token":"123456:AAA-机器人A","channels":[{"id":"-100111","delay":60},{"id":"-100222","delay":300}]},{"token":"987654:BBB-机器人B","channels":[{"id":"-100333","delay":10}]}]
+```
 
-### 2. 机器人报错 409 Conflict？
-日志提示 `Conflict: terminated by other getUpdates request`。
-*   **原因**：你启动了两个机器人实例在用同一个 Token，它们在互相“打架”。
-*   **解决**：
-    1.  检查是否有定时任务 (Cronjob) 在重复启动脚本，**请务必删除定时任务**。
-    2.  执行 `pkill -f python` 杀掉所有后台进程。
-    3.  重新启动 Docker 容器。
+### 4. 常见问题 (FAQ)
 
-### 3. 为什么消息没被删除？
-*   请检查机器人是否已被添加为频道的 **管理员 (Admin)**。
-*   请检查机器人是否有 **Delete Messages (删除消息)** 的权限。
-*   查看日志，如果显示 `message to delete not found`，说明消息可能已经被其他人删除了。
+**Q: 为什么我填了之后报错 JSON 格式错误？**
+A: JSON 对格式要求很严。
+1.  必须用**双引号** `"`，不能用单引号 `'`。
+2.  最后一个元素后面**不能有逗号**。
+3.  建议在电脑上的记事本里先写好，去 [JSON校验网站](https://www.json.cn/) 验证一下格式，再复制到 Zeabur。
+
+**Q: 我可以用一个机器人管理 10 个频道吗？**
+A: 可以。只要在 `channels` 列表里继续添加 `{ "id": "...", "delay": ... }` 即可。
+
+**Q: 多个机器人会冲突吗？**
+A: 不会。这个脚本使用了多线程（Threading），每个机器人在独立的线程里运行，互不干扰。
+
 
 ---
 
