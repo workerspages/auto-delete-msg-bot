@@ -17,10 +17,10 @@ services:
       - DELETE_DELAY=120
       # ===========================================
     volumes:
-      - ./auto_delete_bot.py:/app/auto_delete_bot.py      # 挂载自定脚本（可选）
+      - ./auto_delete_bot.py:/app/auto_delete_bot.py      # 挂载自定脚本文件（可选）
       - /etc/localtime:/etc/localtime:ro                  # 挂载时间，确保日志时间正确（可选）
     working_dir: /app
     # 安装依赖并启动
     command: >
-    # 挂载自定脚本（可选）
+    # 挂载自定脚本文件（可选）
       sh -c "pip install pyTelegramBotAPI && python auto_delete_bot.py"
