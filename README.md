@@ -56,9 +56,8 @@ services:
     environment:
       - TZ=Asia/Shanghai
       # ================= 配置区域 =================
-      # 1. 你的机器人 Token
+      # 配置你的机器人 Token 和 频道 id
       - BOT_CONFIG=[{"token":"123456:AAA-机器人A","channels":[{"id":"-100111","delay":60},{"id":"-100222","delay":300}]},{"token":"987654:BBB-机器人B","channels":[{"id":"-100333","delay":10}]}]
-      - DELETE_DELAY=120
       # ===========================================
     volumes:
       - ./auto_delete_bot.py:/app/auto_delete_bot.py
