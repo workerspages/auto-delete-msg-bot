@@ -49,8 +49,8 @@ version: '3.8'
 
 services:
   bot:
-    image: python:3.11-slim
-    container_name: tg_delete_bot
+    image: ghcr.io/workerspages/auto-delete-msg-bot:latest
+    container_name: auto-delete-msg-bot
     restart: always
     # 设置时区
     environment:
