@@ -94,9 +94,9 @@ docker-compose logs -f
 
 
 
-### 2. 新的配置方式 (JSON)
+### 配置方式 (JSON)
 
-因为要支持复杂结构，我们不再使用 `BOT_TOKEN` 这种单一变量，而是合并为一个名为 `BOT_CONFIG` 的变量，其内容是一个 **JSON 列表**。
+因为要支持复杂结构，使用这种单一变量，而是合并为一个名为 `BOT_CONFIG` 的变量，其内容是一个 **JSON 列表**。
 
 #### 示例配置格式
 
@@ -139,9 +139,8 @@ docker-compose logs -f
 
 在 Zeabur 的 **Variables** 面板中：
 
-1.  **删除** 旧变量：`BOT_TOKEN`, `CHANNEL_ID`, `DELETE_DELAY`（这些已经不用了）。
-2.  **新增** 变量 `BOT_CONFIG`。
-3.  **填入值**：将上面的 JSON 代码压缩成一行（或者 Zeabur 支持多行输入），填进去。
+1.  **新增** 变量 `BOT_CONFIG`。
+2.  **填入值**：将上面的 JSON 代码压缩成一行（或者 Zeabur 支持多行输入），填进去。
 
 **Zeabur 填写的示例值（压缩版）：**
 ```text
