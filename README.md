@@ -38,7 +38,7 @@
 在服务器上创建一个文件夹：
 ```bash
 mkdir tg-auto-delete
-cd tg-auto-delete
+cd auto-delete-msg-bot
 ```
 
 ### 2. 创建配置文件
