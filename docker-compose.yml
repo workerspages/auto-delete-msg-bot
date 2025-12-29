@@ -22,4 +22,5 @@ services:
     working_dir: /app
     # 安装依赖并启动
     command: >
-      sh -c "pip install pyTelegramBotAPI && python auto_delete_bot.py"   # 挂载自定脚本（可选）
+    # 挂载自定脚本（可选）
+      sh -c "pip install pyTelegramBotAPI && python auto_delete_bot.py"
