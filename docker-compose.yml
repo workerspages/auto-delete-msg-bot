@@ -10,17 +10,14 @@ services:
       - TZ=Asia/Shanghai
       # ================= 配置区域 =================
       # 1. 你的机器人 Token
-      - BOT_TOKEN=YOUR_BOT_TOKEN_HERE
-      # 2. 你的频道 ID
-      - CHANNEL_ID=-100xxxxxxxxxx
-      # 3. 删除延迟 (秒)，例如 120 秒 = 2分钟
+      - BOT_CONFIG=[{"token":"123456:AAA-机器人A","channels":[{"id":"-100111","delay":60},{"id":"-100222","delay":300}]},{"token":"987654:BBB-机器人B","channels":[{"id":"-100333","delay":10}]}]
       - DELETE_DELAY=120
       # ===========================================
     volumes:
-      - ./auto_delete_bot.py:/app/auto_delete_bot.py      # 挂载自定脚本文件（可选）
-      - /etc/localtime:/etc/localtime:ro                  # 挂载时间，确保日志时间正确（可选）
+      - ./auto_delete_bot.py:/app/auto_delete_bot.py
+      # 挂载时间，确保日志时间正确
+      - /etc/localtime:/etc/localtime:ro
     working_dir: /app
     # 安装依赖并启动
     command: >
-    # 挂载自定脚本文件（可选）
       sh -c "pip install pyTelegramBotAPI && python auto_delete_bot.py"
